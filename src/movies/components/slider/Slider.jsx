@@ -67,14 +67,11 @@ const HeroSlide = () => {
 const HeroSlideItem = props => {
 
     let navigate = useNavigate();
-
     const item = props.item;
-
     const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path);
 
     const setModalActive = async () => {
         const modal = document.querySelector(`#modal_${item.id}`);
-
         const videos = await tmdbApi.getVideos(category.movie, item.id);
 
         if (videos.results.length > 0) {
@@ -98,7 +95,7 @@ const HeroSlideItem = props => {
                     <div className="overview">{item.overview}</div>
                     <div className="btns">
                         <Button onClick={() => navigate('/catalog/' + item.id)}>
-                            Comprar Ahora
+                            Ver detalles
                         </Button>
                         <OutlineButton onClick={setModalActive}>
                             Ver trailer
@@ -115,9 +112,7 @@ const HeroSlideItem = props => {
 
 const TrailerModal = props => {
     const item = props.item;
-
     const iframeRef = useRef(null);
-
     const onClose = () => iframeRef.current.setAttribute('src', '');
 
     return (

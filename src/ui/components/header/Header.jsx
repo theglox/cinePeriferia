@@ -12,11 +12,7 @@ const headerNav = [
         path: '/'
     },
     {
-        display: 'cartelera',
-        path: '/cartelera'
-    },
-    {
-        display: 'food',
+        display: 'Confiteria',
         path: '/confiteria'
     }
 ];
