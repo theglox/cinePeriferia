@@ -1,15 +1,15 @@
-import { useEffect, useReducer } from "react";
 import TicketRow from "./TicketRow";
-import ticketsReducer, { initialState } from "../../reducers/ticketsReducer";
+
 import {
   ADD_QUANTITY,
   SELECT_SCHEDULE,
-  SET_TICKETS,
   SUBST_QUANTITY,
-} from "../../actions/tickets";
+} from "../../store/tickets";
+import { useDispatch, useSelector } from "react-redux";
 
-const TicketsTable = ({ tickets }) => {
-  const [state, dispatch] = useReducer(ticketsReducer, initialState);
+const TicketsTable = () => {
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
   const addTicketQuantity = (id) => {
     dispatch({ type: ADD_QUANTITY, payload: { id } });
   };
@@ -21,24 +21,22 @@ const TicketsTable = ({ tickets }) => {
     dispatch({ type: SELECT_SCHEDULE, payload: horario });
   };
 
-  useEffect(() => {
-    dispatch({ type: SET_TICKETS, payload: { tickets } });
-  }, [tickets]);
+  // useEffect(() => {
+  //   dispatch({ type: SET_TICKETS, payload: { tickets } });
+  // }, [tickets]);
 
   return (
     <>
       <div>
         <h4>Selecciona un horario de función:</h4>
         <ul>
-          {state.schedule.map((schedule) => (
+          {state.cinema?.schedule?.map((schedule) => (
             <li key={schedule} onClick={() => handleScheduleSelect(schedule)}>
               {schedule}
             </li>
           ))}
         </ul>
-        <p>Horario seleccionado: {state.horarioSeleccionado}</p>
-        {/* Aquí iría el formulario o cualquier otro componente que necesite el horario seleccionado */}
-
+        <p>Horario seleccionado: {state.cinema.selectedSchedule}</p>
         <h4>Seleccione número de boletas</h4>
         <table>
           <thead>
@@ -49,7 +47,7 @@ const TicketsTable = ({ tickets }) => {
             </tr>
           </thead>
           <tbody>
-            {state.tickets.map((ticket) => (
+            {state.cinema?.tickets?.map((ticket) => (
               <TicketRow
                 key={ticket.id}
                 {...ticket}
@@ -61,7 +59,7 @@ const TicketsTable = ({ tickets }) => {
         </table>
       </div>
       <div>
-        <h2>Total:${state.total} </h2>
+        <h2>Total:${state.cinema.total} </h2>
       </div>
     </>
   );

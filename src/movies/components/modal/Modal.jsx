@@ -5,6 +5,7 @@ import "./modal.scss";
 import Tickets from "../../../Tickets/pages/Tickets";
 import FormUser from "../../../Tickets/pages/FormUser";
 import TransactionSummary from "../../../Tickets/components/summary/TransactionSummary ";
+import { useSelector } from "react-redux";
 
 const Modal = (props) => {
   const [active, setActive] = useState(false);
@@ -50,7 +51,7 @@ ModalContent.propTypes = {
 
 export const StepsContent = (props) => {
   const contentRef = useRef(null);
-
+  const { isPayed } = useSelector((state) => state);
   const closeModal = () => {
     contentRef.current.parentNode.classList.remove("active");
     if (props.onClose) props.onClose();
@@ -59,13 +60,13 @@ export const StepsContent = (props) => {
   const [step, setStep] = useState(1);
 
   // Funciónes para pasarle a los botnoes
- 
-  const actionBack = () =>{
+
+  const actionBack = () => {
     setStep(step - 1);
-  }
-  const actionContinue = () =>{
+  };
+  const actionContinue = () => {
     setStep(step + 1);
-  }
+  };
   // Renderizado del contenido de cada paso
   const renderStepContent = () => {
     switch (step) {
@@ -87,7 +88,7 @@ export const StepsContent = (props) => {
         return (
           <div>
             <h2>Paso 3: Confirmación</h2>
-           <TransactionSummary/>
+            <TransactionSummary />
           </div>
         );
       default:
@@ -101,7 +102,12 @@ export const StepsContent = (props) => {
         <p>Paso {step} de 3</p>
       </div>
       {renderStepContent()}
-      <StepButtons actionBack={actionBack} actionContinue={actionContinue}/>
+      <StepButtons
+        actionBack={actionBack}
+        actionContinue={actionContinue}
+        isPayed={isPayed}
+        step={step}
+      />
       <div className="modal__content__close" onClick={closeModal}>
         <i className="bx bx-x"></i>
         <h1>x</h1>
@@ -116,13 +122,32 @@ StepsContent.propTypes = {
 
 // TODO: ESTO SE PUEDE SACAR EN UN COMPONENTE APARTE:
 
-const StepButtons = ({ actionBack, actionContinue }) => {
+const StepButtons = ({ actionBack, actionContinue, isPayed, step }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    if (!isPayed && step === 2) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  }, [isPayed, step]);
+  if (step === 3) {
+    return null;
+  }
+
   return (
     <>
-      <button className="btn small" onClick={actionBack}>
-        Regresar
-      </button>
-      <button className="btn small" onClick={actionContinue}>
+      {step > 1 && ( // Verifica si el paso actual es mayor que 1
+        <button className="btn small" onClick={actionBack}>
+          Regresar
+        </button>
+      )}
+      <button
+        className="btn small"
+        disabled={isDisabled}
+        onClick={actionContinue}
+      >
         Continuar
       </button>
     </>

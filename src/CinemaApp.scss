@@ -47,9 +47,24 @@ a {
 
 button,
 input {
-    outline: 0;
+    border: 0;
+    background-color: $black;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: $border-radius;
+    color: $txt-color;
+    font-family: $font-family;
 }
 
+select{
+    border: 0;
+    background-color: $black;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: $border-radius;
+    color: $txt-color;
+    font-family: $font-family;
+}
 ul {
     list-style-type: none;
 }

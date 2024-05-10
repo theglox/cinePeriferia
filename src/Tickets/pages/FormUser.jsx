@@ -1,6 +1,4 @@
 
-import { useState } from 'react';
-import TicketsTable from '../components/TicketsTable'
 import PaymentForm from '../components/form/PaymentForm'
 const tickets = [
     {

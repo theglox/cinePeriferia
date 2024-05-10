@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FINISH_TRANSACTION } from '../../../store/tickets';
 
-const PaymentForm = ({handleSubmit} ) => {
+const PaymentForm = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => state);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    paymentMethod: ''
+    name: user.name,
+    email: user.email,
+    paymentMethod: '',
+    numCard: '' // Agrega el campo numCard al estado local
   });
 
   const handleChange = (e) => {
@@ -15,14 +20,25 @@ const PaymentForm = ({handleSubmit} ) => {
     });
   };
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     // onNextStep();
-//   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.paymentMethod || !formData.numCard) {
+      alert('Por favor, complete todos los campos obligatorios.');
+      return;
+    }
+
+    if (formData.numCard.length !== 16) {
+      alert('Por favor, ingrese un número de tarjeta válido.');
+      return;
+    }
+
+    dispatch({ type: FINISH_TRANSACTION, payload: { ...formData, ispayed: true } });
+  };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} >
         <div>
           <label htmlFor="name">Nombre:</label>
           <input
@@ -31,6 +47,7 @@ const PaymentForm = ({handleSubmit} ) => {
             name="name"
             value={formData.name}
             onChange={handleChange}
+            required 
           />
         </div>
         <div>
@@ -41,6 +58,7 @@ const PaymentForm = ({handleSubmit} ) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            required 
           />
         </div>
         <div>
@@ -50,12 +68,28 @@ const PaymentForm = ({handleSubmit} ) => {
             name="paymentMethod"
             value={formData.paymentMethod}
             onChange={handleChange}
+            required 
           >
-            <option value="tarjeta">Tarjeta de crédito</option>
-            <option value="paypal">PayPal</option>
-            <option value="efectivo">Efectivo</option>
+            <option value="">Seleccione un método de pago</option>
+            <option value="credito">Tarjeta de crédito</option>
+            <option value="debito">Tarjeta de Debito</option>
+            <option value="cineCard">Tarjeta crack</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="numCard">n° tarjeta:</label>
+          <input
+            type="text" 
+            id="numCard"
+            name="numCard"
+            value={formData.numCard}
+            onChange={handleChange}
+            required 
+            minLength="16" 
+            maxLength="16" 
+          />
+        </div>
+        <button className="btn small" type="submit">Pagar</button>
       </form>
     </div>
   );
